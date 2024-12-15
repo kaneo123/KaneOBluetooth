@@ -7,16 +7,20 @@ import android.util.DisplayMetrics
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dantsu.escposprinter.EscPosPrinter
@@ -46,6 +50,62 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun CarveryGridButtons(modifier: Modifier = Modifier) {
+    val buttonSize = 100.dp
+
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Row 1
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            CarveryButton("Adult Carvery", Color.Red, buttonSize)
+            CarveryButton("Kids Carvery", Color.Blue, buttonSize)
+            CarveryButton("Vegan Carvery", Color.Magenta, buttonSize)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Row 2
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            CarveryButton("O.A.P Carvery", Color.Yellow, buttonSize)
+            CarveryButton("Extra Pigs", Color(0xFF800080), buttonSize) // Custom Purple
+            CarveryButton("Extra Yorkie", Color.Cyan, buttonSize)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Row 3
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            CarveryButton("Baby Bowl", Color.Green, buttonSize)
+        }
+    }
+}
+
+@Composable
+fun CarveryButton(label: String, color: Color, size: androidx.compose.ui.unit.Dp) {
+    Button(
+        onClick = { /* Handle click */ },
+        modifier = Modifier
+            .size(size)
+            .background(Color.White),
+        colors = ButtonDefaults.buttonColors(containerColor = color)
+    ) {
+        Text(text = label, fontSize = 12.sp, color = Color.Black)
+    }
+}
+
+@Composable
 fun MainContent(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var permissionGranted by remember { mutableStateOf(false) }
@@ -64,16 +124,20 @@ fun MainContent(modifier: Modifier = Modifier) {
         ) {
             Text(text = "Bluetooth Permissions Granted")
             Spacer(modifier = Modifier.height(16.dp))
+            CarveryGridButtons(modifier = Modifier.fillMaxWidth()) // Add grid buttons
+            Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { performPrint(context) }) {
                 Text("Print")
             }
         }
     } else {
-        Text(
-            text = "Please grant Bluetooth permissions",
+        Column(
             modifier = modifier.fillMaxSize(),
-            style = androidx.compose.ui.text.TextStyle.Default
-        )
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Please grant Bluetooth permissions")
+        }
     }
 }
 
